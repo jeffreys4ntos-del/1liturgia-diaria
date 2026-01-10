@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Liturgia Diária</title>
+  <style>
+    body {
+      font-family: Arial, Arial, sans-serif;
+      padding: 20px;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    .linha {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📖 Liturgia Diária</h2>
+<p id="data">Carregando...</p>
+
+<div class="linha"><strong>Primeira Leitura:</strong> <span id="l1"></span></div>
+<div class="linha"><strong>Salmo:</strong> <span id="sl"></span></div>
+<div class="linha"><strong>Evangelho:</strong> <span id="ev"></span></div>
+
+<script>
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+
+  const url = `https://cpbjr.github.io/catholic-readings-api/readings/${ano}/${mes}-${dia}.json`;
+
+  fetch(url)
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById("data").innerText = d.date;
+      document.getElementById("l1").innerText = d.readings.first?.reference || "—";
+      document.getElementById("sl").innerText = d.readings.psalm?.reference || "—";
+      document.getElementById("ev").innerText = d.readings.gospel?.reference || "—";
+    })
+    .catch(() => {
+      document.getElementById("data").innerText =
+        "Liturgia indisponível para hoje.";
+    });
+</script>
+
+</body>
+</html>
